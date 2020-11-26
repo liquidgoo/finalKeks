@@ -1,0 +1,13 @@
+print(
+printf(
+println(
+write(
+append(
+writeBoolean(
+writeByte(
+writeChar(
+writeDouble(
+writeFloat(
+writeInt(
+writeLong(
+writeShort(
