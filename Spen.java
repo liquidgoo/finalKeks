@@ -57,8 +57,9 @@ public class Spen {
 
         prog = sb.toString();
         //Удаление ключ слов(почти)
+        prog = " " + prog;
         for (String keyWord : keyWords) {
-            prog = prog.replaceAll("[\\s\n]+" + keyWord + "\\s+", " ");
+            prog = prog.replaceAll("(?<=\\s)+" + keyWord + " +", " ");
         }
 
         sb = new StringBuilder(prog);

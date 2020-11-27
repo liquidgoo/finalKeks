@@ -10,7 +10,7 @@ public class TrashRemover {
 
     public TrashRemover(String prog) {
         prog = prog.replaceAll("(?s:/\\*.*?\\*/)|//.*", ""); //комменты
-        prog = prog.replaceAll("\"(?:\\\\\"|[^\"])*?\"", ""); //литералы
+            prog = prog.replaceAll("\"(?:\\\\\"|[^\"])*?\"", ""); //литералы
 
 
         HashSet<String> keyWords = new HashSet<>();
@@ -20,8 +20,9 @@ public class TrashRemover {
             e.printStackTrace();
         }
         prog = prog.replace("(", "( ").replace(")", " )");
+        prog = " " + prog;
         for (String keyWord : keyWords) {
-            prog = prog.replaceAll(" +" + keyWord + " +", " ");
+            prog = prog.replaceAll("(?<=\\s)+" + keyWord + " +", " ");
         }
         String[] lines = prog.split("\\n");
         String id = "[A-z$_][A-z$_0-9]*";

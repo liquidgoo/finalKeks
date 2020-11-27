@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 public class Chepin {
     private String prog;
     private HashSet<String> vars;
-    public HashSet<String> input, modify, control, parasite;
-    public Chepin chepinIO;
+    private HashSet<String> input, modify, control, parasite;
+    private Chepin chepinIO;
     private HashSet<String> ioVars = new HashSet<>();
 
     public Chepin(String prog, Set<String> vars, HashSet<String> ioVars) {
@@ -46,7 +46,7 @@ public class Chepin {
         control = new HashSet<>();
         parasite = new HashSet<>();
 
-        String controlKeyWords = "(for\\()|(while\\()|(if\\()(switch\\()";    // начало поиска управляющих
+        String controlKeyWords = "(for\\()|(while\\()|(if\\()|(switch\\()";    // начало поиска управляющих
 
         Matcher m = Pattern.compile(controlKeyWords).matcher(prog);
         while (m.find()) {
@@ -89,11 +89,12 @@ public class Chepin {
                         break;
                     }
                 }
-                if (!control.contains(var) && prog.startsWith(var, end - var.length())) {
+                if (prog.startsWith(var, end - var.length())) {
                     if (isInput) {      //если вводим, то в вводимые, если нет, то в модифицируемые
-                        input.add(var);
+                        if (!control.contains(var))
+                            input.add(var);
                         ioVars.add(var);
-                    } else {
+                    } else if (!control.contains(var)) {
                         input.remove(var);
                         modify.add(var);
                     }
@@ -123,15 +124,20 @@ public class Chepin {
                 previousOperatorEnd++;
                 String substr = prog.substring(previousOperatorEnd, start);
                 HashSet<String> auxiliaryOutput = findVarsInString(substr);
-                useful.addAll(auxiliaryOutput);
+                for (String found : auxiliaryOutput) {
+                    if (!useful.contains(found)) useful.add(found);
+                }
 
                 start += outputMethod.length();
                 int end = endOfParentheses(start);
                 substr = prog.substring(start, end);
 
                 HashSet<String> outputs = findVarsInString(substr);
-                useful.addAll(outputs);
+                for (String found : outputs) {
+                    if (!useful.contains(found)) useful.add(found);
+                }
                 ioVars.addAll(outputs);
+
 
                 start = prog.indexOf(outputMethod, start);
             }
@@ -193,5 +199,25 @@ public class Chepin {
         }
         end--;
         return end < prog.length() ? end : -1;
+    }
+
+    public HashSet<String> getControl() {
+        return control;
+    }
+
+    public HashSet<String> getInput() {
+        return input;
+    }
+
+    public HashSet<String> getModify() {
+        return modify;
+    }
+
+    public HashSet<String> getParasite() {
+        return parasite;
+    }
+
+    public Chepin getChepinIO() {
+        return chepinIO;
     }
 }
